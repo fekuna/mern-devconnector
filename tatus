@@ -1,0 +1,194 @@
+[1mdiff --git a/client/src/App.js b/client/src/App.js[m
+[1mindex 9586570..07be7be 100644[m
+[1m--- a/client/src/App.js[m
+[1m+++ b/client/src/App.js[m
+[36m@@ -1,37 +1,43 @@[m
+ import React, { Component } from 'react';[m
+[31m-import { Switch, Route } from 'react-router-dom';[m
+[31m-import jwtDecode from 'jwt-decode';[m
+[31m-import setAuthToken from './utils/setAuthToken';[m
+[31m-import { setCurrentUser } from './store/actions/authActions';[m
+[32m+[m[32mimport { Switch, Route, Redirect, withRouter } from 'react-router-dom';[m
+[32m+[m[32mimport { connect } from 'react-redux';[m
+[32m+[m[32m// import jwtDecode from 'jwt-decode';[m
+[32m+[m[32m// import setAuthToken from './utils/setAuthToken';[m
+[32m+[m[32m// import { setCurrentUser } from './store/actions/authActions';[m
+ [m
+ import Layout from './containers/Layout/Layout';[m
+ import LandingPage from './components/LandingPage/LandingPage';[m
+ import Login from './containers/Auth/Login';[m
+ import Register from './containers/Auth/Register';[m
+[31m-import store from './store/store';[m
+[32m+[m[32mimport * as actions from './store/actions';[m
+[32m+[m[32m// import store from './store/store';[m
+ [m
+ import './App.css';[m
+ [m
+[31m-// Check for Token[m
+[31m-if (localStorage.jwtToken) {[m
+[31m-  // Set auth Token header auth[m
+[31m-  setAuthToken(localStorage.jwtToken);[m
+[31m-  // Decode token and get user info and exp[m
+[31m-  const decoded = jwtDecode(localStorage.jwtToken);[m
+[31m-  // Set User and isAuthenticated[m
+[31m-  store.dispatch(setCurrentUser(decoded));[m
+[31m-}[m
+[31m-[m
+ class App extends Component {[m
+[32m+[m[32m  componentDidMount() {[m
+[32m+[m[32m    this.props.onTryAutoLogin();[m
+[32m+[m[32m  }[m
+[32m+[m
+   render() {[m
+     let routes = ([m
+       <Switch>[m
+         <Route path="/login" component={Login} />[m
+         <Route path="/register" component={Register} />[m
+         <Route path="/" exact component={LandingPage} />[m
+[32m+[m[32m        <Redirect to="/" />[m
+       </Switch>[m
+     );[m
+ [m
+[32m+[m[32m    if (this.props.auth.isAuthenticated) {[m
+[32m+[m[32m      routes = ([m
+[32m+[m[32m        <Switch>[m
+[32m+[m[32m          <Route path="/logout" component={Login} />[m
+[32m+[m[32m          <Redirect to="/" />[m
+[32m+[m[32m        </Switch>[m
+[32m+[m[32m      );[m
+[32m+[m[32m    }[m
+[32m+[m
+     return ([m
+       <div className="App">[m
+         <Layout>{routes}</Layout>[m
+[36m@@ -40,4 +46,17 @@[m [mclass App extends Component {[m
+   }[m
+ }[m
+ [m
+[31m-export default App;[m
+[32m+[m[32mconst mapStateToProps = state => ({[m
+[32m+[m[32m  auth: state.auth[m
+[32m+[m[32m});[m
+[32m+[m
+[32m+[m[32mconst mapDispatchToProps = dispatch => ({[m
+[32m+[m[32m  onTryAutoLogin: () => dispatch(actions.authCheckLogin())[m
+[32m+[m[32m});[m
+[32m+[m
+[32m+[m[32mexport default withRouter([m
+[32m+[m[32m  connect([m
+[32m+[m[32m    mapStateToProps,[m
+[32m+[m[32m    mapDispatchToProps[m
+[32m+[m[32m  )(App)[m
+[32m+[m[32m);[m
+[1mdiff --git a/client/src/components/Navbar/Navbar.js b/client/src/components/Navbar/Navbar.js[m
+[1mindex e93299c..c39550b 100644[m
+[1m--- a/client/src/components/Navbar/Navbar.js[m
+[1m+++ b/client/src/components/Navbar/Navbar.js[m
+[36m@@ -2,17 +2,10 @@[m [mimport React from 'react';[m
+ import { NavLink, withRouter } from 'react-router-dom';[m
+ import PropTypes from 'prop-types';[m
+ import { connect } from 'react-redux';[m
+[31m-import * as actions from '../../store/actions';[m
+ [m
+ const Navbar = props => {[m
+   const { isAuthenticated, user } = props.auth;[m
+ [m
+[31m-  const onLogoutClick = e => {[m
+[31m-    e.preventDefault();[m
+[31m-    props.onLogoutUser();[m
+[31m-    props.history.push('/')[m
+[31m-  };[m
+[31m-[m
+   let navLinks = ([m
+     <ul className="navbar-nav ml-auto">[m
+       <li className="nav-item">[m
+[36m@@ -32,12 +25,9 @@[m [mconst Navbar = props => {[m
+     navLinks = ([m
+       <ul className="navbar-nav ml-auto">[m
+         <li className="nav-item">[m
+[31m-          <NavLink[m
+[31m-            to="/logout"[m
+[31m-            onClick={e => onLogoutClick(e)}[m
+[31m-            className="nav-link"[m
+[31m-          >[m
+[32m+[m[32m          <NavLink to="/logout" className="nav-link">[m
+             <img[m
+[32m+[m[32m              className="rounded-circle"[m
+               src={user.avatar}[m
+               alt={user.name}[m
+               style={{ width: '25px', marginRight: '5px' }}[m
+[36m@@ -82,7 +72,6 @@[m [mconst Navbar = props => {[m
+ };[m
+ [m
+ Navbar.propTypes = {[m
+[31m-  onLogoutUser: PropTypes.func.isRequired,[m
+   auth: PropTypes.object.isRequired[m
+ };[m
+ [m
+[36m@@ -90,11 +79,5 @@[m [mconst mapStateToProps = state => ({[m
+   auth: state.auth[m
+ });[m
+ [m
+[31m-const mapDispatchToProps = dispatch => ({[m
+[31m-  onLogoutUser: () => dispatch(actions.logoutUser())[m
+[31m-});[m
+ [m
+[31m-export default connect([m
+[31m-  mapStateToProps,[m
+[31m-  mapDispatchToProps[m
+[31m-)(withRouter(Navbar));[m
+[32m+[m[32mexport default connect(mapStateToProps)(withRouter(Navbar));[m
+[1mdiff --git a/client/src/containers/Auth/Login.js b/client/src/containers/Auth/Login.js[m
+[1mindex 0498077..86e17c7 100644[m
+[1m--- a/client/src/containers/Auth/Login.js[m
+[1m+++ b/client/src/containers/Auth/Login.js[m
+[36m@@ -12,9 +12,9 @@[m [mexport class Login extends Component {[m
+   };[m
+ [m
+   componentWillReceiveProps(nextProps) {[m
+[31m-    if (nextProps.auth.isAuthenticated) {[m
+[31m-      this.props.history.push('/dashboard');[m
+[31m-		}[m
+[32m+[m[32m    // if (nextProps.auth.isAuthenticated) {[m
+[32m+[m[32m    //   this.props.history.push('/dashboard');[m
+[32m+[m		[32m// }[m
+ 		if(nextProps.errors){[m
+ 			this.setState({[m
+ 				errors: nextProps.errors[m
+[1mdiff --git a/client/src/store/actions/authActions.js b/client/src/store/actions/authActions.js[m
+[1mindex fad9812..5d7650c 100644[m
+[1m--- a/client/src/store/actions/authActions.js[m
+[1m+++ b/client/src/store/actions/authActions.js[m
+[36m@@ -55,3 +55,24 @@[m [mexport const logoutUser = () => dispatch => {[m
+   // Set current user to {} which will set isAuthenticated to false[m
+   dispatch(setCurrentUser({}));[m
+ };[m
+[32m+[m
+[32m+[m[32m// Check login user[m
+[32m+[m[32mexport const authCheckLogin = () => dispatch => {[m
+[32m+[m[32m  // Check for Token[m
+[32m+[m[32m  if (localStorage.jwtToken) {[m
+[32m+[m[32m    // Set auth Token header auth[m
+[32m+[m[32m    setAuthToken(localStorage.jwtToken);[m
+[32m+[m[32m    // Decode token and get user info and exp[m
+[32m+[m[32m    const decoded = jwtDecode(localStorage.jwtToken);[m
+[32m+[m[32m    // Set User and isAuthenticated[m
+[32m+[m[32m    dispatch(setCurrentUser(decoded));[m
+[32m+[m
+[32m+[m[32m    // Check for expired token[m
+[32m+[m[32m    const currentTime = Date.now() / 1000;[m
+[32m+[m[32m    if (decoded.exp < currentTime) {[m
+[32m+[m[32m      // Logout User[m
+[32m+[m[32m      dispatch(setCurrentUser({}));[m
+[32m+[m[32m      // TODO: Clear current Profile[m
+[32m+[m[32m    }[m
+[32m+[m[32m  }[m
+[32m+[m[32m};[m
+[1mdiff --git a/client/src/store/actions/index.js b/client/src/store/actions/index.js[m
+[1mindex 623d7ad..e846aa6 100644[m
+[1m--- a/client/src/store/actions/index.js[m
+[1m+++ b/client/src/store/actions/index.js[m
+[36m@@ -1,2 +1,2 @@[m
+ // AUTHENTICATION[m
+[31m-export { registerUser, loginUser, logoutUser } from './authActions';[m
+[32m+[m[32mexport { registerUser, loginUser, logoutUser, authCheckLogin } from './authActions';[m
