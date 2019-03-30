@@ -55,3 +55,25 @@ export const logoutUser = () => dispatch => {
   // Set current user to {} which will set isAuthenticated to false
   dispatch(setCurrentUser({}));
 };
+
+export const authCheckLoginUser = () => dispatch => {
+  // Check for Token
+  if (localStorage.jwtToken) {
+    // Set auth Token header auth
+    setAuthToken(localStorage.jwtToken);
+    // Decode token and get user info and exp
+    const decoded = jwtDecode(localStorage.jwtToken);
+    // Set User and isAuthenticated
+    dispatch(setCurrentUser(decoded));
+
+    // Check for expired token
+    const currentTime = Date.now() / 1000;
+    if (decoded.exp < currentTime) {
+      // Logout User
+      dispatch(logoutUser());
+      // TODO: Clear current profile
+
+      // Redirect to login
+    }
+  }
+};

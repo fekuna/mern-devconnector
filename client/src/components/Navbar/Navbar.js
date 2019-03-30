@@ -7,12 +7,6 @@ import * as actions from '../../store/actions';
 const Navbar = props => {
   const { isAuthenticated, user } = props.auth;
 
-  const onLogoutClick = e => {
-    e.preventDefault();
-    props.onLogoutUser();
-    props.history.push('/')
-  };
-
   let navLinks = (
     <ul className="navbar-nav ml-auto">
       <li className="nav-item">
@@ -32,12 +26,9 @@ const Navbar = props => {
     navLinks = (
       <ul className="navbar-nav ml-auto">
         <li className="nav-item">
-          <NavLink
-            to="/logout"
-            onClick={e => onLogoutClick(e)}
-            className="nav-link"
-          >
+          <NavLink to="/logout" className="nav-link">
             <img
+              className="rounded-circle"
               src={user.avatar}
               alt={user.name}
               style={{ width: '25px', marginRight: '5px' }}
