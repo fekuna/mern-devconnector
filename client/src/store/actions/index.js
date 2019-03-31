@@ -2,4 +2,4 @@
 export { registerUser, loginUser, logoutUser, authCheckLoginUser } from './authActions';
 
 // Profile
-export { getCurrentProfile, clearCurrentProfile, createProfile } from './profileActions'
+export { getCurrentProfile, clearCurrentProfile, createProfile, deleteAccount } from './profileActions'

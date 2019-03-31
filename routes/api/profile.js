@@ -61,6 +61,12 @@ router.post(
   profileController.postEducation
 );
 
+// @route Delete api/profile
+// @desc Delete Profile and User
+// @access Private
+router.delete('/', passport.authenticate('jwt', {session: false}), profileController.deleteProfileAndUser)
+
+
 // @route Delete api/profile/experience/:expId
 // @desc Delete experience
 // @access Private

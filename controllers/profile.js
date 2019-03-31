@@ -48,7 +48,8 @@ exports.postProfile = (req, res, next) => {
 	if (req.body.website) profileFields.website = req.body.website;
 	if (req.body.location) profileFields.location = req.body.location;
 	if (req.body.status) profileFields.status = req.body.status;
-	if (req.body.githubUsername) profileFields.githubUsername = req.body.githubUsername;
+	if (req.body.githubUserName) profileFields.githubUserName = req.body.githubUserName;
+	if (req.body.bio) profileFields.bio = req.body.bio;
 	// Skills - Split into array
 	if (typeof req.body.skills !== 'undefined') {
 		profileFields.skills = req.body.skills.split(',');
@@ -246,7 +247,7 @@ exports.deleteEducation = (req, res, next) => {
 exports.deleteProfileAndUser = (req, res, next) => {
 	Profile.findOneAndRemove({ user: req.user.id })
 		.then(() => {
-			return User.findOneAndRemove({ user: req.user.id });
+			return User.findOneAndRemove({ _id: req.user.id });
 		})
 		.then(() => res.status(200).json({ success: true }));
 };
