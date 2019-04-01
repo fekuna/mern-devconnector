@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 
 import LandingPage from './components/LandingPage/LandingPage';
 import CreateProfile from './containers/CreateProfile/CreateProfile';
+import AddExperience from './containers/AddExperience/AddExperience';
+import AddEducation from './containers/AddEducation/AddEducation';
 import EditProfile from './containers/EditProfile/EditProfile';
 import Layout from './containers/Layout/Layout';
 import Dashboard from './containers/Dashboard/Dashboard';
@@ -26,6 +28,8 @@ class App extends Component {
         <Route path="/register" component={Register} />
         <PrivateRoute path="/dashboard" exact component={Dashboard} />
         <PrivateRoute path="/create-profile" exact component={CreateProfile} />
+        <PrivateRoute path="/add-experience" exact component={AddExperience} />
+        <PrivateRoute path="/add-education" exact component={AddEducation} />
         <PrivateRoute path="/edit-profile" exact component={EditProfile} />
         <Route path="/" exact component={LandingPage} />
         <Redirect to="/" />
@@ -36,6 +40,8 @@ class App extends Component {
         <Switch>
           <Route path="/logout" component={Logout} />
           <PrivateRoute path="/edit-profile" exact component={EditProfile} />
+          <PrivateRoute path="/add-experience" exact component={AddExperience} />
+          <PrivateRoute path="/add-education" exact component={AddEducation} />
           <PrivateRoute path="/create-profile" exact component={CreateProfile} />
           <PrivateRoute path="/dashboard" exact component={Dashboard} />
           <Redirect to="/dashboard" />

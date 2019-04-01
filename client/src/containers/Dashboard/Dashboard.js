@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import ProfileActions from './ProfileActions';
+import Experience from './Experience';
+import Education from './Education';
 
 import * as actions from '../../store/actions';
 
@@ -32,6 +34,8 @@ class Dashboard extends Component {
               </Link>
             </p>
             <ProfileActions />
+            <Experience experience={this.props.profile.profile.experience} />
+            <Education education={this.props.profile.profile.education} />
             {/* TODO: exp and edu */}
             <div style={{ marginBottom: '60px' }} />
             <button onClick={this.onDeleteAccount.bind(this)} className="btn btn-danger">Delete My Account</button>
