@@ -52,7 +52,7 @@ class Education extends Component {
 }
 
 Education.propTypes = {
-  deleteEducation: PropTypes.func.isRequired
+  onDeleteEducation: PropTypes.func.isRequired
 };
 
 const mapDispatchToProps = dispatch => ({

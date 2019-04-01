@@ -26,6 +26,9 @@ const Navbar = props => {
     navLinks = (
       <ul className="navbar-nav ml-auto">
         <li className="nav-item">
+          <NavLink to="/dashboard" className="nav-link">Dashboard</NavLink>
+        </li>
+        <li className="nav-item">
           <NavLink to="/logout" className="nav-link">
             <img
               className="rounded-circle"

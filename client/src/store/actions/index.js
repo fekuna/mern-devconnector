@@ -9,6 +9,8 @@ export {
 // Profile
 export {
   getCurrentProfile,
+  getProfiles,
+  getProfileByHandle,
   clearCurrentProfile,
   createProfile,
   deleteAccount,

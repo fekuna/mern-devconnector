@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { Switch, Route, withRouter, Redirect } from 'react-router-dom';
+import { Switch, Route, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import LandingPage from './components/LandingPage/LandingPage';
+import Profiles from './containers/Profiles/Profiles';
+import Profile from './containers/Profile/Profile';
 import CreateProfile from './containers/CreateProfile/CreateProfile';
 import AddExperience from './containers/AddExperience/AddExperience';
 import AddEducation from './containers/AddEducation/AddEducation';
@@ -22,36 +24,46 @@ class App extends Component {
     this.props.onTryAutoLogin();
   }
   render() {
-    let routes = (
-      <Switch>
-        <Route path="/login" component={Login} />
-        <Route path="/register" component={Register} />
-        <PrivateRoute path="/dashboard" exact component={Dashboard} />
-        <PrivateRoute path="/create-profile" exact component={CreateProfile} />
-        <PrivateRoute path="/add-experience" exact component={AddExperience} />
-        <PrivateRoute path="/add-education" exact component={AddEducation} />
-        <PrivateRoute path="/edit-profile" exact component={EditProfile} />
-        <Route path="/" exact component={LandingPage} />
-        <Redirect to="/" />
-      </Switch>
-    );
-    if (this.props.isAuth) {
-      routes = (
-        <Switch>
-          <Route path="/logout" component={Logout} />
-          <PrivateRoute path="/edit-profile" exact component={EditProfile} />
-          <PrivateRoute path="/add-experience" exact component={AddExperience} />
-          <PrivateRoute path="/add-education" exact component={AddEducation} />
-          <PrivateRoute path="/create-profile" exact component={CreateProfile} />
-          <PrivateRoute path="/dashboard" exact component={Dashboard} />
-          <Redirect to="/dashboard" />
-        </Switch>
-      );
-    }
-
     return (
       <div className="App">
-        <Layout>{routes}</Layout>
+        <Layout>
+          <Route exact path="/" component={LandingPage} />
+          <Route exact path="/register" component={Register} />
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/profiles" component={Profiles} />
+          <Route exact path="/profile/:handle" component={Profile} />
+          <Switch>
+            <PrivateRoute exact path="/dashboard" component={Dashboard} />
+          </Switch>
+          <Switch>
+            <PrivateRoute exact path="/logout" component={Logout} />
+          </Switch>
+          <Switch>
+            <PrivateRoute
+              exact
+              path="/create-profile"
+              component={CreateProfile}
+            />
+          </Switch>
+          <Switch>
+            <PrivateRoute exact path="/edit-profile" component={EditProfile} />
+          </Switch>
+          <Switch>
+            <PrivateRoute
+              exact
+              path="/add-experience"
+              component={AddExperience}
+            />
+          </Switch>
+          <Switch>
+            <PrivateRoute
+              exact
+              path="/add-education"
+              component={AddEducation}
+            />
+          </Switch>
+          {/* <Route exact path="/not-found" component={NotFound} /> */}
+        </Layout>
       </div>
     );
   }

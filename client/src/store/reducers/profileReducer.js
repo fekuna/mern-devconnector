@@ -19,11 +19,17 @@ export default (state = initialState, action) => {
         profile: action.payload,
         loading: false
       };
-      case actionTypes.CLEAR_CURRENT_PROFILE:
+    case actionTypes.GET_PROFILES:
+      return {
+        ...state,
+        profiles: action.payload,
+        loading: false
+      };
+    case actionTypes.CLEAR_CURRENT_PROFILE:
       return {
         ...state,
         profile: null
-      }
+      };
     default:
       return state;
   }

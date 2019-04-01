@@ -52,7 +52,7 @@ class Experience extends Component {
 }
 
 Experience.propTypes = {
-  deleteExperience: PropTypes.func.isRequired
+  onDeleteExperience: PropTypes.func.isRequired
 };
 
 const mapDispachToProps = dispatch => ({
